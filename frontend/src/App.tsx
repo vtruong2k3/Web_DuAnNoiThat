@@ -6,6 +6,9 @@ import Clientlayout from './layout/Clientlayout'
 import Home from './pages/Home'
 import Products from './pages/Products'
 import Productdetail from './pages/Productdetail'
+import Login from './pages/Login'
+import Register from './pages/Register'
+import Cartmodal from './pages/Cartmodal'
 function App() {
   // Swal.fire({
   //   icon: 'error',                // Icon hiển thị (success, error, warning, info, question)
@@ -23,7 +26,10 @@ function App() {
             {path:"product", element:<Products/>},
             {path:"product/product-detail", element:<Productdetail/>},
         ]
-      }
+      },
+      {path:"/login", element:<Login/>},
+      {path:"/register", element:<Register/>},
+      {path:"/cart", element:<Cartmodal/>}
   ])
 
   return(
