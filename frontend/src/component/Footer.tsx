@@ -1,16 +1,16 @@
 import logo from '../assets/img/logo/logo 1.png'
-export default function footerClient(){
+export default function footerClient() {
     return (
 
         <footer className="footer bg-dark text-light py-5 mt-5">
             <div className="container">
                 <div className="row">
-                   
+
                     <div className="col-md-3">
                         <div className="footer-logo mb-3">
                             <img src={logo} alt="Company Logo" />
                         </div>
-                       
+
                         <ul className="list-unstyled">
                             <li><i className="bi bi-telephone"></i> 0947.225.188</li>
                             <li><i className="bi bi-envelope"></i> House1996ft@gmail.com</li>
@@ -24,7 +24,7 @@ export default function footerClient(){
                         </div>
                     </div>
 
-                   
+
                     <div className="col-md-3">
                         <h5>Chi nhánh</h5>
                         <ul className="list-unstyled">
@@ -36,7 +36,7 @@ export default function footerClient(){
                         </ul>
                     </div>
 
-                  
+
                     <div className="col-md-3">
                         <h5>Chính sách</h5>
                         <ul className="list-unstyled">
@@ -47,7 +47,7 @@ export default function footerClient(){
                         </ul>
                     </div>
 
-                   
+
                     <div className="col-md-3">
                         <h5>Hỏi đáp</h5>
                         <ul className="list-unstyled">

@@ -49,7 +49,8 @@ header {
 }
 
 header .header-logo-img {
-    padding-right: 40px;
+    padding-left: 10px;
+    padding-right: 20px;
 }
 
 header .logo-img {
@@ -153,12 +154,71 @@ header .header-item {
     color: var(--color);
     cursor: pointer;
     padding: 5px 10px;
-    font-size: 20px;
+    font-size: 23px;
 }
 
 header .header-item:hover {
     opacity: 0.6;
 }
+
+header .dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+header .dropdown .dropdown-menu {
+    display: none; 
+    position: absolute;
+    top: 100%; 
+    left: 25px;
+    z-index: 1000;
+    background-color: #fff; 
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2); 
+    border-radius: 5px;
+    padding: 0.5rem 0;
+    min-width: 200px;
+    
+}
+
+header .dropdown .dropdown-menu .dropdown-item {
+    padding: 10px 15px;
+    display: block;
+    text-decoration: none;
+    color: #333;
+    transition: background-color 0.5s ease;
+}
+
+header .dropdown .dropdown-menu .dropdown-item:hover {
+    background-color: var(--color); 
+    color: #fff; 
+}
+header .header-item-username{
+    font-family: var(--font-open);
+    font-weight: 400;
+    font-size: 17px;
+}
+
+header .dropdown:hover .dropdown-menu {
+    display: block;
+}
+
+  
+  header .dropdown-item:focus,
+  header .dropdown-item:hover {
+    background-color: var(--color); 
+    color: white; 
+    outline: none; 
+  }
+  
+  
+
+
+header .dropdown-toggle {
+    padding: 10px 20px;
+    font-weight: bold;
+}
+
+
 
 footer .footer-social {
     display: flex;
@@ -1038,7 +1098,12 @@ footer .footer-social>a {
     animation: modalCart ease 0.5s;
     
 }
-
+.container-cartmodal .container-cartmodal-title{
+    font-family: var(--font-open);
+    font-size: 30px;
+    color: var(--color);
+    margin: 0;
+}
 
 .container-cartmodal .cartmodal-close{
     width: 40px;

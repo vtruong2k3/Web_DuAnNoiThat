@@ -15,6 +15,9 @@ const cartModal: React.FC<ModalProps>=({isOpen,onClose})=> {
                 <div className='cartmodal-close' onClick={onClose}>
                     <i className="fa-solid fa-xmark"></i>
                 </div>
+                <div className="container-cartmodal-heading-title">
+                    <h1 className='container-cartmodal-title text-center'>Giỏ hàng <span><i className="fa-solid fa-bag-shopping"></i></span></h1>
+                </div>
                 <div className="cartmodal-list">
                     
                     

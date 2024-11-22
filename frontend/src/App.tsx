@@ -9,6 +9,7 @@ import Productdetail from './pages/Productdetail'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Cartmodal from './pages/Cartmodal'
+import { Toaster } from 'react-hot-toast';
 function App() {
   // Swal.fire({
   //   icon: 'error',                // Icon hiển thị (success, error, warning, info, question)
@@ -33,7 +34,11 @@ function App() {
   ])
 
   return(
-    <div>{router}</div>
+    <div>
+      {router}
+      <Toaster/>
+    </div>
+
   )
 }
 
