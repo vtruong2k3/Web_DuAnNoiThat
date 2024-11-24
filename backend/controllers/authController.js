@@ -44,6 +44,8 @@ class authController {
           message: "Email không tồn tại",
         });
       }
+      console.log(checkMail);
+      
       const checkPassword = await bcryt.compare(password, checkMail.password);
       if (!checkPassword) {
         return res.status(400).json({

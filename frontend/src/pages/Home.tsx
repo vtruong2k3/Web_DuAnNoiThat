@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import c1 from '../assets/img/category/icon-web-01-600x360.webp'
 import c2 from '../assets/img/category/icon-web-02-600x360.webp'
 import c3 from '../assets/img/category/icon-web-03-600x360.webp'
@@ -22,11 +23,42 @@ import t3 from '../assets/img/news/t3.webp'
 import t4 from '../assets/img/news/t4.webp'
 import { Link } from 'react-router-dom'
 import Banner from '../component/Banner'
+import { useEffect, useState } from 'react'
+import { newProduct, ProductType } from '../services/Productservices'
+import Loading from '../component/Loading'
+import { ErrorType } from '../services/Authservices'
+import toast from 'react-hot-toast'
 export default function homePage() {
+    const [loading, setLoading] = useState<boolean>(false)
+    const [newProducts, setNewProducts] = useState<ProductType>()
+
+    const productNew = async () => {
+        try {
+            setLoading(true)
+            const { data } = await newProduct()
+           
+
+
+            setNewProducts(data)
+        } catch (error) {
+            console.log((error as ErrorType).message);
+            toast.error((error as ErrorType).message)
+        } finally {
+            setLoading(false)
+        }
+    }
+    useEffect(() => {
+        productNew()
+    }, [])
+    const formatPrice=(price:number):string=>{
+        return price.toLocaleString('vi-VN') + 'VND'
+    }
     return (
         <div className="container-home">
-             <Banner/>
+            <Banner />
+
             <div className="container">
+                {loading && <Loading />}
                 <div className="category">
                     <div className="category-item">
                         <img src={c1} alt="" className='category-item-img' />
@@ -79,27 +111,35 @@ export default function homePage() {
                 <div className="product-new">
                     <h1 className="text-center product-new-title title-all">Sản phẩm mới</h1>
                     <div className="product-new-list">
-                        <div className="product-new-item">
-                           <Link to={'/product/product-detail'}> <img src={n1} alt="" className="product-new-img" /></Link>
-                            <div className="product-box-new"><p>New</p></div>
-                            <div className="product-new-body">
-                                <h3 className="product-new-body-title">Sofa Zara</h3>
-                                <div className="product-rating">
-                                    <span className="star">★</span>
-                                    <span className="star">★</span>
-                                    <span className="star">★</span>
-                                    <span className="star">★</span>
-                                    <span className="star">★</span>
+                        {newProducts && newProducts.productData && newProducts.productData.length > 0 ? (
+                            newProducts.productData.map(product => (
+                                <div className="product-new-item" key={product._id}>
+                                    <Link to={`/product/product-detail/${product._id}`}>
+                                        <img src={`http://localhost:5000/uploads/${product.image_url}`} alt="" className="product-new-img" />
+                                    </Link>
+                                    <div className="product-box-new"><p>New</p></div>
+                                    <div className="product-new-body">
+                                        <h3 className="product-new-body-title">{product.product_name}</h3>
+                                        <div className="product-rating">
+                                            <span className="star">★</span>
+                                            <span className="star">★</span>
+                                            <span className="star">★</span>
+                                            <span className="star">★</span>
+                                            <span className="star">★</span>
+                                        </div>
+                                        <div className="product-new-money">
+                                            <p className='money-sale'>{formatPrice(product.price)}</p>
+                                            <p className='money'>5.000.000 VND</p> {/* Giá cố định, có thể thay bằng giá gốc nếu có */}
+                                        </div>
+                                    </div>
                                 </div>
+                            ))
+                        ) : (
+                            <p>No new products available</p>
+                        )}
 
-                                <div className="product-new-money">
-                                    <p className='money-sale'>3.200.000 VND</p>
-                                    <p className='money'>5.000.000 VND</p>
-                                </div>
 
-                            </div>
-                        </div>
-                        <div className="product-new-item">
+                        {/* <div className="product-new-item">
                             <img src={n2} alt="" className="product-new-img" />
                             <div className="product-box-new"><p>New</p></div>
                             <div className="product-new-body">
@@ -158,7 +198,7 @@ export default function homePage() {
                                 </div>
 
                             </div>
-                        </div>
+                        </div> */}
 
                     </div>
                 </div>

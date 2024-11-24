@@ -7,7 +7,7 @@ export type RegisterType = {
 }
 export type UserType = {
     userData: {
-        userId: string,
+        id: string|undefined,
         username: string,
         email: string,
     }

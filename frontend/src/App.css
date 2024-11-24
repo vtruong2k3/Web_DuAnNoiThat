@@ -1169,6 +1169,22 @@ footer .footer-social>a {
     font-size: 15px;
     color: red;
     font-weight: 500;
+    margin-bottom: 8px;
+}
+.container-cartmodal .cartmodal-body .cartmodal-body-quantity{
+    font-family: var(--font-inter);
+    font-weight: 400;
+    margin: 0;
+    
+}
+.container-cartmodal .cartmodal-body .cartmodal-body-text input{
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    line-height: 30px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
 }
 .container-cartmodal .cartmodal-pay{
     width: 100%;

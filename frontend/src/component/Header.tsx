@@ -27,7 +27,7 @@ const headerClient: React.FC<HeaderProps> = ({ onLoginClick }) => {
         try {
             const { data } = await getUser()
             setUserData(data)
-            console.log(data);
+           
 
         } catch (error) {
             console.log((error as ErrorType).message);
