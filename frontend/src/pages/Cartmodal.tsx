@@ -1,61 +1,57 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
-import { ErrorType, getUser, UserType } from '../services/Authservices';
-import { Cart, fetchCart } from '../services/Productservices';
+import { ErrorType} from '../services/Authservices';
+import { Cart, fetchCart } from '../services/Cartservices';
 import Loading from '../component/Loading'
 
+import { useUserContext } from '../context/UserContext';
+import { Link } from 'react-router-dom';
+import { useCart } from '../context/CartContext';
+
 interface ModalProps {
-    isOpen: boolean;
+    
     onClose: () => void;
 
 }
-const cartModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
-    if (!isOpen) return null
-    const [userData, setUserData] = useState<UserType | null>(null);
+const cartModal: React.FC<ModalProps> = ({  onClose }) => {
+  
     const [cart, setCart] = useState<Cart[]>([]);
     const [totalAmount, setTotalAmount] = useState<number>(0);
     const [loading, setLoading] = useState<boolean>(false)
-    const token = localStorage.getItem('token')
-
-
-    const userGet = async () => {
-
-        try {
-            const { data } = await getUser()
-            setUserData(data)
-        } catch (error) {
-            console.log((error as ErrorType).message);
-            toast.error((error as ErrorType).message)
-        }
-    }
-    useEffect(() => {
-        if (token) {
-            userGet()
-
-        }
-    }, [token])
+    const {setTotalQuantity}=useCart()
+    
+    const {user}=useUserContext()
+   
     const getAllCart = async () => {
         try {
             setLoading(true)
-            const { data } = await fetchCart(userData?.userData.id)
+            const { data } = await fetchCart(user?.userData.id)
             setCart(data.data.cartItems);
+           
             setTotalAmount(data.totalAmount);
-
+            setTotalQuantity(data.totalQuantity)
         } catch (error) {
-            console.log((error as ErrorType).message);
-            toast.error((error as ErrorType).message)
+            const errorMessage =
+                (error as ErrorType).response?.data?.message ||
+                (error as ErrorType).message ||
+                "Đã xảy ra lỗi, vui lòng thử lại.";
+
+            console.error("Lỗi:", errorMessage);
+            toast.error(errorMessage);
+            console.log(errorMessage);
         } finally {
             setLoading(false)
         }
     }
     useEffect(() => {
-        if (userData?.userData.id) {
+        if (user?.userData.id) {
             getAllCart()
         }
-    }, [userData])
-    const formatPrice = (price: number): string => {
-        return price.toLocaleString('vi-VN') + 'VND'
+    }, [user])
+    const isCartEmpty = cart.length === 0 ;
+    const formatPrice=(price:number):string=>{
+        return price.toLocaleString('vi-VN')+ ' ' + 'VND'
     }
 
 
@@ -76,7 +72,7 @@ const cartModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
                             cart.map((product) => (
                                 <div className="cartmodal-item" key={product.product_id}>
                                     <div className="col-md-4">
-                                        <a href={'/product'}><img src={`http://localhost:5000/uploads/${product.image_url}`} alt="" className="cartmodal-img" /></a>
+                                        <a href={'/product/cart'}><img src={`http://localhost:5000/uploads/${product.image_url}`} alt="" className="cartmodal-img" /></a>
                                     </div>
                                     <div className="col-md-8 cartmodal-body">
                                         <h4 className="cartmodal-body-title">{product.product_name}</h4>
@@ -100,13 +96,13 @@ const cartModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
                             </h4>
                             <p className="cartmodal-pay-amount-money">{formatPrice(totalAmount)}</p>
                         </div>
-                        <a href="/" className='cartmodal-pay-link'><button className='cartmodal-pay-btn'>{loading ? (
+                        <Link  to="/product/oders" className='cartmodal-pay-link'><button  disabled={isCartEmpty} onClick={onClose} className='cartmodal-pay-btn'>{loading ? (
                             <>
                                 <Loading />Loading...
                             </>
                         ) : (
                             "Thanh toán"
-                        )}</button></a>
+                        )}</button></Link>
                     </div>
                 </div>
             </div>

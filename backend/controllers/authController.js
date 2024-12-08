@@ -44,11 +44,11 @@ class authController {
           message: "Email không tồn tại",
         });
       }
-      console.log(checkMail);
+     
       
       const checkPassword = await bcryt.compare(password, checkMail.password);
       if (!checkPassword) {
-        return res.status(400).json({
+        return res.status(404).json({
           message: "Sai mật khẩu",
         });
       } else {
@@ -57,6 +57,7 @@ class authController {
             id: checkMail._id,
             username: checkMail.username,
             email: checkMail.email,
+            role: checkMail.role
           },
           process.env.KEY_TOKEN,
           { expiresIn: "1d" }

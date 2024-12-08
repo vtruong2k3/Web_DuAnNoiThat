@@ -1,17 +1,55 @@
+/* eslint-disable react-hooks/rules-of-hooks */
+import { useEffect, useState } from 'react'
 import n1 from '../assets/img/product/new_1.png'
 import n2 from '../assets/img/product/new_2.png'
 import n3 from '../assets/img/product/new_3.png'
 import n4 from '../assets/img/product/new_4.png'
+import { getProduct, ProductType } from '../services/Productservices'
+import { ErrorType } from '../services/Authservices'
+import toast from 'react-hot-toast'
+import Loading from '../component/Loading'
+import { Link } from 'react-router-dom'
 export default function productAll() {
+    const [loading, setLoading] = useState<boolean>(false)
+    const [product, setProduct] = useState<ProductType>()
+    const getProductAll = async () => {
+        try {
+            setLoading(true)
+            const { data } = await getProduct()
+
+
+
+            setProduct(data)
+        } catch (error) {
+            const errorMessage =
+                (error as ErrorType).response?.data?.message ||
+                (error as ErrorType).message ||
+                "Đã xảy ra lỗi, vui lòng thử lại.";
+
+            console.error("Lỗi:", errorMessage);
+            toast.error(errorMessage);
+            console.log(errorMessage);
+        } finally {
+            setLoading(false)
+        }
+    }
+    useEffect(() => {
+        getProductAll()
+    }, [])
+    const formatPrice = (price: number): string => {
+        return price.toLocaleString('vi-VN') + ' ' + 'VND'
+    }
     return (
+        
         <div className="container-product-all">
+            {loading && <Loading/>}
             <div className="banner-product-all">
                 <h1 className="banner-product-all-title">Tất cả sản phẩm</h1>
             </div>
 
             <div className="container">
                 <div className="product-all-list">
-                    <div className="col-3 col-left ">
+                    <div className="col-3 col-left mt-5">
                         <div className="card">
                             <div className="card-header ">DANH MỤC SẢN PHẨM</div>
                             <ul className="list-group list-group-flush">
@@ -90,248 +128,33 @@ export default function productAll() {
 
 
                         <div className="product-new-list">
-                            <div className="product-new-item">
-                                <img src={n1} alt="" className="product-new-img" />
-                                <div className="product-box-new"><p>New</p></div>
-                                <div className="product-new-body">
-                                    <h3 className="product-new-body-title">Sofa Zara</h3>
-                                    <div className="product-rating">
-                                        <span className="star">★</span>
-                                        <span className="star">★</span>
-                                        <span className="star">★</span>
-                                        <span className="star">★</span>
-                                        <span className="star">★</span>
+                        {product && product.productData && product.productData.length > 0 ? (
+                                product.productData.map(product => (
+                                    <div className="product-new-item" key={product._id}>
+                                        <Link to={`/product/product-detail/${product._id}`}>
+                                            <img src={`http://localhost:5000/uploads/${product.image_url}`} alt="" className="product-new-img" />
+                                        </Link>
+                                       
+                                        <div className="product-new-body">
+                                            <h3 className="product-new-body-title">{product.product_name}</h3>
+                                            <div className="product-rating">
+                                                <span className="star">★</span>
+                                                <span className="star">★</span>
+                                                <span className="star">★</span>
+                                                <span className="star">★</span>
+                                                <span className="star">★</span>
+                                            </div>
+                                            <div className="product-new-money">
+                                                <p className='money-sale'>{formatPrice(product.price)}</p>
+                                                <p className='money'>5.000.000 VND</p> {/* Giá cố định, có thể thay bằng giá gốc nếu có */}
+                                            </div>
+                                        </div>
                                     </div>
-
-                                    <div className="product-new-money">
-                                        <p className='money-sale'>3.200.000 VND</p>
-                                        <p className='money'>5.000.000 VND</p>
-                                    </div>
-
-                                </div>
-                            </div>
-                            <div className="product-new-item">
-                                <img src={n2} alt="" className="product-new-img" />
-                                <div className="product-box-new"><p>New</p></div>
-                                <div className="product-new-body">
-                                    <h3 className="product-new-body-title">Sofa Zara</h3>
-                                    <div className="product-rating">
-                                        <span className="star">★</span>
-                                        <span className="star">★</span>
-                                        <span className="star">★</span>
-                                        <span className="star">★</span>
-                                        <span className="star">★</span>
-                                    </div>
-
-                                    <div className="product-new-money">
-                                        <p className='money-sale'>3.200.000 VND</p>
-                                        <p className='money'>5.000.000 VND</p>
-                                    </div>
-
-                                </div>
-                            </div>
-                            <div className="product-new-item">
-                                <img src={n3} alt="" className="product-new-img" />
-                                <div className="product-box-new"><p>New</p></div>
-                                <div className="product-new-body">
-                                    <h3 className="product-new-body-title">Sofa Zara</h3>
-                                    <div className="product-rating">
-                                        <span className="star">★</span>
-                                        <span className="star">★</span>
-                                        <span className="star">★</span>
-                                        <span className="star">★</span>
-                                        <span className="star">★</span>
-                                    </div>
-
-                                    <div className="product-new-money">
-                                        <p className='money-sale'>3.200.000 VND</p>
-                                        <p className='money'>5.000.000 VND</p>
-                                    </div>
-
-                                </div>
-                            </div>
-                            <div className="product-new-item">
-                                <img src={n4} alt="" className="product-new-img" />
-                                <div className="product-box-new"><p>New</p></div>
-                                <div className="product-new-body">
-                                    <h3 className="product-new-body-title">Sofa Zara</h3>
-                                    <div className="product-rating">
-                                        <span className="star">★</span>
-                                        <span className="star">★</span>
-                                        <span className="star">★</span>
-                                        <span className="star">★</span>
-                                        <span className="star">★</span>
-                                    </div>
-
-                                    <div className="product-new-money">
-                                        <p className='money-sale'>3.200.000 VND</p>
-                                        <p className='money'>5.000.000 VND</p>
-                                    </div>
-
-                                </div>
-                            </div>
-
-
-                            <div className="product-new-item">
-                                <img src={n1} alt="" className="product-new-img" />
-                                <div className="product-box-new"><p>New</p></div>
-                                <div className="product-new-body">
-                                    <h3 className="product-new-body-title">Sofa Zara</h3>
-                                    <div className="product-rating">
-                                        <span className="star">★</span>
-                                        <span className="star">★</span>
-                                        <span className="star">★</span>
-                                        <span className="star">★</span>
-                                        <span className="star">★</span>
-                                    </div>
-
-                                    <div className="product-new-money">
-                                        <p className='money-sale'>3.200.000 VND</p>
-                                        <p className='money'>5.000.000 VND</p>
-                                    </div>
-
-                                </div>
-                            </div>
-                            <div className="product-new-item">
-                                <img src={n2} alt="" className="product-new-img" />
-                                <div className="product-box-new"><p>New</p></div>
-                                <div className="product-new-body">
-                                    <h3 className="product-new-body-title">Sofa Zara</h3>
-                                    <div className="product-rating">
-                                        <span className="star">★</span>
-                                        <span className="star">★</span>
-                                        <span className="star">★</span>
-                                        <span className="star">★</span>
-                                        <span className="star">★</span>
-                                    </div>
-
-                                    <div className="product-new-money">
-                                        <p className='money-sale'>3.200.000 VND</p>
-                                        <p className='money'>5.000.000 VND</p>
-                                    </div>
-
-                                </div>
-                            </div>
-                            <div className="product-new-item">
-                                <img src={n3} alt="" className="product-new-img" />
-                                <div className="product-box-new"><p>New</p></div>
-                                <div className="product-new-body">
-                                    <h3 className="product-new-body-title">Sofa Zara</h3>
-                                    <div className="product-rating">
-                                        <span className="star">★</span>
-                                        <span className="star">★</span>
-                                        <span className="star">★</span>
-                                        <span className="star">★</span>
-                                        <span className="star">★</span>
-                                    </div>
-
-                                    <div className="product-new-money">
-                                        <p className='money-sale'>3.200.000 VND</p>
-                                        <p className='money'>5.000.000 VND</p>
-                                    </div>
-
-                                </div>
-                            </div>
-                            <div className="product-new-item">
-                                <img src={n4} alt="" className="product-new-img" />
-                                <div className="product-box-new"><p>New</p></div>
-                                <div className="product-new-body">
-                                    <h3 className="product-new-body-title">Sofa Zara</h3>
-                                    <div className="product-rating">
-                                        <span className="star">★</span>
-                                        <span className="star">★</span>
-                                        <span className="star">★</span>
-                                        <span className="star">★</span>
-                                        <span className="star">★</span>
-                                    </div>
-
-                                    <div className="product-new-money">
-                                        <p className='money-sale'>3.200.000 VND</p>
-                                        <p className='money'>5.000.000 VND</p>
-                                    </div>
-
-                                </div>
-                            </div>
-                            <div className="product-new-item">
-                                <img src={n1} alt="" className="product-new-img" />
-                                <div className="product-box-new"><p>New</p></div>
-                                <div className="product-new-body">
-                                    <h3 className="product-new-body-title">Sofa Zara</h3>
-                                    <div className="product-rating">
-                                        <span className="star">★</span>
-                                        <span className="star">★</span>
-                                        <span className="star">★</span>
-                                        <span className="star">★</span>
-                                        <span className="star">★</span>
-                                    </div>
-
-                                    <div className="product-new-money">
-                                        <p className='money-sale'>3.200.000 VND</p>
-                                        <p className='money'>5.000.000 VND</p>
-                                    </div>
-
-                                </div>
-                            </div>
-                            <div className="product-new-item">
-                                <img src={n2} alt="" className="product-new-img" />
-                                <div className="product-box-new"><p>New</p></div>
-                                <div className="product-new-body">
-                                    <h3 className="product-new-body-title">Sofa Zara</h3>
-                                    <div className="product-rating">
-                                        <span className="star">★</span>
-                                        <span className="star">★</span>
-                                        <span className="star">★</span>
-                                        <span className="star">★</span>
-                                        <span className="star">★</span>
-                                    </div>
-
-                                    <div className="product-new-money">
-                                        <p className='money-sale'>3.200.000 VND</p>
-                                        <p className='money'>5.000.000 VND</p>
-                                    </div>
-
-                                </div>
-                            </div>
-                            <div className="product-new-item">
-                                <img src={n3} alt="" className="product-new-img" />
-                                <div className="product-box-new"><p>New</p></div>
-                                <div className="product-new-body">
-                                    <h3 className="product-new-body-title">Sofa Zara</h3>
-                                    <div className="product-rating">
-                                        <span className="star">★</span>
-                                        <span className="star">★</span>
-                                        <span className="star">★</span>
-                                        <span className="star">★</span>
-                                        <span className="star">★</span>
-                                    </div>
-
-                                    <div className="product-new-money">
-                                        <p className='money-sale'>3.200.000 VND</p>
-                                        <p className='money'>5.000.000 VND</p>
-                                    </div>
-
-                                </div>
-                            </div>
-                            <div className="product-new-item">
-                                <img src={n4} alt="" className="product-new-img" />
-                                <div className="product-box-new"><p>New</p></div>
-                                <div className="product-new-body">
-                                    <h3 className="product-new-body-title">Sofa Zara</h3>
-                                    <div className="product-rating">
-                                        <span className="star">★</span>
-                                        <span className="star">★</span>
-                                        <span className="star">★</span>
-                                        <span className="star">★</span>
-                                        <span className="star">★</span>
-                                    </div>
-
-                                    <div className="product-new-money">
-                                        <p className='money-sale'>3.200.000 VND</p>
-                                        <p className='money'>5.000.000 VND</p>
-                                    </div>
-
-                                </div>
-                            </div>
+                                ))
+                            ) : (
+                                <p>No new products available</p>
+                            )}
+                            
                         </div>
                     </div>
                 </div>

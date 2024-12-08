@@ -9,10 +9,6 @@ import p1 from '../assets/img/project-home/Rectangle 4.png'
 import p2 from '../assets/img/project-home/Rectangle 5.png'
 import p3 from '../assets/img/project-home/Rectangle 6.png'
 import p4 from '../assets/img/project-home/Rectangle 7.png'
-import n1 from '../assets/img/product/new_1.png'
-import n2 from '../assets/img/product/new_2.png'
-import n3 from '../assets/img/product/new_3.png'
-import n4 from '../assets/img/product/new_4.png'
 import cabinet from '../assets/img/icon/cabinet.png'
 import table from '../assets/img/icon/table.png'
 import m1 from '../assets/img/banner/m1.jpeg'
@@ -24,34 +20,140 @@ import t4 from '../assets/img/news/t4.webp'
 import { Link } from 'react-router-dom'
 import Banner from '../component/Banner'
 import { useEffect, useState } from 'react'
-import { newProduct, ProductType } from '../services/Productservices'
+import { cabinetProduct, chairsProduct, newProduct, ProductType, sofaProduct, tablesProduct } from '../services/Productservices'
 import Loading from '../component/Loading'
 import { ErrorType } from '../services/Authservices'
 import toast from 'react-hot-toast'
 export default function homePage() {
     const [loading, setLoading] = useState<boolean>(false)
     const [newProducts, setNewProducts] = useState<ProductType>()
-
+    const [productSofa, setSofaProduct] = useState<ProductType>()
+    const [productCabinet, setCabinetProduct] = useState<ProductType>()
+    const [productTables, setTablesProduct] = useState<ProductType>()
+    const [productChairs, setChairsProduct] = useState<ProductType>()
     const productNew = async () => {
         try {
             setLoading(true)
             const { data } = await newProduct()
-           
+
 
 
             setNewProducts(data)
         } catch (error) {
-            console.log((error as ErrorType).message);
-            toast.error((error as ErrorType).message)
+            const errorMessage =
+                (error as ErrorType).response?.data?.message ||
+                (error as ErrorType).message ||
+                "Đã xảy ra lỗi, vui lòng thử lại.";
+
+            console.error("Lỗi:", errorMessage);
+            toast.error(errorMessage);
+            console.log(errorMessage);
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    useEffect(() => {
+        productNew()
+    }, [])
+    const getSofa = async () => {
+        try {
+            setLoading(true)
+            const { data } = await sofaProduct()
+
+
+
+            setSofaProduct(data)
+        } catch (error) {
+            const errorMessage =
+                (error as ErrorType).response?.data?.message ||
+                (error as ErrorType).message ||
+                "Đã xảy ra lỗi, vui lòng thử lại.";
+
+            console.error("Lỗi:", errorMessage);
+            toast.error(errorMessage);
+            console.log(errorMessage);
         } finally {
             setLoading(false)
         }
     }
     useEffect(() => {
-        productNew()
+        getSofa()
     }, [])
-    const formatPrice=(price:number):string=>{
-        return price.toLocaleString('vi-VN') + 'VND'
+    const getCabinet = async () => {
+        try {
+            setLoading(true)
+            const { data } = await cabinetProduct()
+
+
+
+            setCabinetProduct(data)
+        } catch (error) {
+            const errorMessage =
+                (error as ErrorType).response?.data?.message ||
+                (error as ErrorType).message ||
+                "Đã xảy ra lỗi, vui lòng thử lại.";
+
+            console.error("Lỗi:", errorMessage);
+            toast.error(errorMessage);
+            console.log(errorMessage);
+        } finally {
+            setLoading(false)
+        }
+    }
+    useEffect(() => {
+        getCabinet()
+    }, [])
+    const getTables = async () => {
+        try {
+            setLoading(true)
+            const { data } = await tablesProduct()
+
+
+
+            setTablesProduct(data)
+        } catch (error) {
+            const errorMessage =
+                (error as ErrorType).response?.data?.message ||
+                (error as ErrorType).message ||
+                "Đã xảy ra lỗi, vui lòng thử lại.";
+
+            console.error("Lỗi:", errorMessage);
+            toast.error(errorMessage);
+            console.log(errorMessage);
+        } finally {
+            setLoading(false)
+        }
+    }
+    useEffect(() => {
+        getTables()
+    }, [])
+    const getChairs = async () => {
+        try {
+            setLoading(true)
+            const { data } = await chairsProduct()
+
+
+
+            setChairsProduct(data)
+        } catch (error) {
+            const errorMessage =
+                (error as ErrorType).response?.data?.message ||
+                (error as ErrorType).message ||
+                "Đã xảy ra lỗi, vui lòng thử lại.";
+
+            console.error("Lỗi:", errorMessage);
+            toast.error(errorMessage);
+            console.log(errorMessage);
+        } finally {
+            setLoading(false)
+        }
+    }
+    useEffect(() => {
+        getChairs()
+    }, [])
+    const formatPrice = (price: number): string => {
+        return price.toLocaleString('vi-VN') + ' ' + 'VND'
     }
     return (
         <div className="container-home">
@@ -91,19 +193,27 @@ export default function homePage() {
 
                     <div className="project-home-list">
                         <div className="project-home-item">
-                            <img src={p1} alt="" className="project-home-img" />
+                            <div className="project-home-box-img">
+                                <img src={p1} alt="" className="project-home-img" />
+                            </div>
                             <h4 className="project-home-title">Nội thất Phòng khách</h4>
                         </div>
                         <div className="project-home-item">
-                            <img src={p2} alt="" className="project-home-img" />
+                            <div className="project-home-box-img">
+                                <img src={p2} alt="" className="project-home-img" />
+                            </div>
                             <h4 className="project-home-title">Nội thất Phòng ngủ</h4>
                         </div>
                         <div className="project-home-item">
-                            <img src={p3} alt="" className="project-home-img" />
+                            <div className="project-home-box-img">
+                                <img src={p3} alt="" className="project-home-img" />
+                            </div>
                             <h4 className="project-home-title">Nội thất Phòng bếp</h4>
                         </div>
                         <div className="project-home-item">
-                            <img src={p4} alt="" className="project-home-img" />
+                            <div className="project-home-box-img">
+                                <img src={p4} alt="" className="project-home-img" />
+                            </div>
                             <h4 className="project-home-title">Nội thất Phòng làm việc</h4>
                         </div>
                     </div>
@@ -212,27 +322,33 @@ export default function homePage() {
                             <h4>Sofa <span><i className="fa-solid fa-couch"></i></span></h4>
                         </div>
                         <div className="product-new-list">
-                            <div className="product-new-item">
-                                <img src={n1} alt="" className="product-new-img" />
-
-                                <div className="product-new-body">
-                                    <h3 className="product-new-body-title">Sofa Zara gsdfgsdfgsdfgsdfghsdfgsdf</h3>
-                                    <div className="product-rating">
-                                        <span className="star">★</span>
-                                        <span className="star">★</span>
-                                        <span className="star">★</span>
-                                        <span className="star">★</span>
-                                        <span className="star">★</span>
+                            {productSofa && productSofa.productData && productSofa.productData.length > 0 ? (
+                                productSofa.productData.map(product => (
+                                    <div className="product-new-item" key={product._id}>
+                                        <Link to={`/product/product-detail/${product._id}`}>
+                                            <img src={`http://localhost:5000/uploads/${product.image_url}`} alt="" className="product-new-img" />
+                                        </Link>
+                                       
+                                        <div className="product-new-body">
+                                            <h3 className="product-new-body-title">{product.product_name}</h3>
+                                            <div className="product-rating">
+                                                <span className="star">★</span>
+                                                <span className="star">★</span>
+                                                <span className="star">★</span>
+                                                <span className="star">★</span>
+                                                <span className="star">★</span>
+                                            </div>
+                                            <div className="product-new-money">
+                                                <p className='money-sale'>{formatPrice(product.price)}</p>
+                                                <p className='money'>5.000.000 VND</p> {/* Giá cố định, có thể thay bằng giá gốc nếu có */}
+                                            </div>
+                                        </div>
                                     </div>
-
-                                    <div className="product-new-money">
-                                        <p className='money-sale'>3.200.000 VND</p>
-                                        <p className='money'>5.000.000 VND</p>
-                                    </div>
-
-                                </div>
-                            </div>
-                            <div className="product-new-item">
+                                ))
+                            ) : (
+                                <p>No new products available</p>
+                            )}
+                            {/* <div className="product-new-item">
                                 <img src={n2} alt="" className="product-new-img" />
 
                                 <div className="product-new-body">
@@ -291,7 +407,7 @@ export default function homePage() {
                                     </div>
 
                                 </div>
-                            </div>
+                            </div> */}
 
                         </div>
                     </div>
@@ -300,27 +416,34 @@ export default function homePage() {
                             <h4>Cabinet <span><img src={cabinet} alt="" /></span></h4>
                         </div>
                         <div className="product-new-list">
-                            <div className="product-new-item">
-                                <img src={n1} alt="" className="product-new-img" />
-
-                                <div className="product-new-body">
-                                    <h3 className="product-new-body-title">Sofa Zara</h3>
-                                    <div className="product-rating">
-                                        <span className="star">★</span>
-                                        <span className="star">★</span>
-                                        <span className="star">★</span>
-                                        <span className="star">★</span>
-                                        <span className="star">★</span>
+                        {productCabinet && productCabinet.productData && productCabinet.productData.length > 0 ? (
+                            productCabinet.productData.map(product => (
+                                <div className="product-new-item" key={product._id}>
+                                    <Link to={`/product/product-detail/${product._id}`}>
+                                        <img src={`http://localhost:5000/uploads/${product.image_url}`} alt="" className="product-new-img" />
+                                    </Link>
+                                    <div className="product-box-new"><p>New</p></div>
+                                    <div className="product-new-body">
+                                        <h3 className="product-new-body-title">{product.product_name}</h3>
+                                        <div className="product-rating">
+                                            <span className="star">★</span>
+                                            <span className="star">★</span>
+                                            <span className="star">★</span>
+                                            <span className="star">★</span>
+                                            <span className="star">★</span>
+                                        </div>
+                                        <div className="product-new-money">
+                                            <p className='money-sale'>{formatPrice(product.price)}</p>
+                                            <p className='money'>5.000.000 VND</p> {/* Giá cố định, có thể thay bằng giá gốc nếu có */}
+                                        </div>
                                     </div>
-
-                                    <div className="product-new-money">
-                                        <p className='money-sale'>3.200.000 VND</p>
-                                        <p className='money'>5.000.000 VND</p>
-                                    </div>
-
                                 </div>
-                            </div>
-                            <div className="product-new-item">
+                            ))
+                        ) : (
+                            <p>No new products available</p>
+                        )}
+
+                            {/* <div className="product-new-item">
                                 <img src={n2} alt="" className="product-new-img" />
 
                                 <div className="product-new-body">
@@ -379,7 +502,7 @@ export default function homePage() {
                                     </div>
 
                                 </div>
-                            </div>
+                            </div> */}
 
                         </div>
                     </div>
@@ -388,27 +511,33 @@ export default function homePage() {
                             <h4>Chairs <span><i className="fa-solid fa-chair"></i></span></h4>
                         </div>
                         <div className="product-new-list">
-                            <div className="product-new-item">
-                                <img src={n1} alt="" className="product-new-img" />
-
-                                <div className="product-new-body">
-                                    <h3 className="product-new-body-title">Sofa Zara</h3>
-                                    <div className="product-rating">
-                                        <span className="star">★</span>
-                                        <span className="star">★</span>
-                                        <span className="star">★</span>
-                                        <span className="star">★</span>
-                                        <span className="star">★</span>
+                        {productChairs && productChairs.productData && productChairs.productData.length > 0 ? (
+                            productChairs.productData.map(product => (
+                                <div className="product-new-item" key={product._id}>
+                                    <Link to={`/product/product-detail/${product._id}`}>
+                                        <img src={`http://localhost:5000/uploads/${product.image_url}`} alt="" className="product-new-img" />
+                                    </Link>
+                                    <div className="product-box-new"><p>New</p></div>
+                                    <div className="product-new-body">
+                                        <h3 className="product-new-body-title">{product.product_name}</h3>
+                                        <div className="product-rating">
+                                            <span className="star">★</span>
+                                            <span className="star">★</span>
+                                            <span className="star">★</span>
+                                            <span className="star">★</span>
+                                            <span className="star">★</span>
+                                        </div>
+                                        <div className="product-new-money">
+                                            <p className='money-sale'>{formatPrice(product.price)}</p>
+                                            <p className='money'>5.000.000 VND</p> {/* Giá cố định, có thể thay bằng giá gốc nếu có */}
+                                        </div>
                                     </div>
-
-                                    <div className="product-new-money">
-                                        <p className='money-sale'>3.200.000 VND</p>
-                                        <p className='money'>5.000.000 VND</p>
-                                    </div>
-
                                 </div>
-                            </div>
-                            <div className="product-new-item">
+                            ))
+                        ) : (
+                            <p>No new products available</p>
+                        )}
+                            {/* <div className="product-new-item">
                                 <img src={n2} alt="" className="product-new-img" />
 
                                 <div className="product-new-body">
@@ -467,7 +596,7 @@ export default function homePage() {
                                     </div>
 
                                 </div>
-                            </div>
+                            </div> */}
 
                         </div>
                     </div>
@@ -476,27 +605,33 @@ export default function homePage() {
                             <h4>Tables <span><img src={table} alt="" /></span></h4>
                         </div>
                         <div className="product-new-list">
-                            <div className="product-new-item">
-                                <img src={n1} alt="" className="product-new-img" />
-
-                                <div className="product-new-body">
-                                    <h3 className="product-new-body-title">Sofa Zara</h3>
-                                    <div className="product-rating">
-                                        <span className="star">★</span>
-                                        <span className="star">★</span>
-                                        <span className="star">★</span>
-                                        <span className="star">★</span>
-                                        <span className="star">★</span>
+                        {productTables && productTables.productData && productTables.productData.length > 0 ? (
+                            productTables.productData.map(product => (
+                                <div className="product-new-item" key={product._id}>
+                                    <Link to={`/product/product-detail/${product._id}`}>
+                                        <img src={`http://localhost:5000/uploads/${product.image_url}`} alt="" className="product-new-img" />
+                                    </Link>
+                                    <div className="product-box-new"><p>New</p></div>
+                                    <div className="product-new-body">
+                                        <h3 className="product-new-body-title">{product.product_name}</h3>
+                                        <div className="product-rating">
+                                            <span className="star">★</span>
+                                            <span className="star">★</span>
+                                            <span className="star">★</span>
+                                            <span className="star">★</span>
+                                            <span className="star">★</span>
+                                        </div>
+                                        <div className="product-new-money">
+                                            <p className='money-sale'>{formatPrice(product.price)}</p>
+                                            <p className='money'>5.000.000 VND</p> {/* Giá cố định, có thể thay bằng giá gốc nếu có */}
+                                        </div>
                                     </div>
-
-                                    <div className="product-new-money">
-                                        <p className='money-sale'>3.200.000 VND</p>
-                                        <p className='money'>5.000.000 VND</p>
-                                    </div>
-
                                 </div>
-                            </div>
-                            <div className="product-new-item">
+                            ))
+                        ) : (
+                            <p>No new products available</p>
+                        )}
+                            {/* <div className="product-new-item">
                                 <img src={n2} alt="" className="product-new-img" />
 
                                 <div className="product-new-body">
@@ -555,7 +690,7 @@ export default function homePage() {
                                     </div>
 
                                 </div>
-                            </div>
+                            </div> */}
 
                         </div>
                     </div>

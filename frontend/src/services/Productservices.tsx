@@ -1,13 +1,12 @@
 import axios from "axios";
-import mongoose from 'mongoose'
-import { ErrorType } from "./Authservices";
+
 export type Product = {
     _id: string|undefined;
     product_name: string;
     price: number;
     description: string;
     category_id: string;
-    meterial: string;
+    material: string;
     dimensions: string;
     stock_quantity: number;
     image_url: string;
@@ -19,49 +18,48 @@ export type ProductType = {
 
     ]
 };
+export type CommenttType={
+    comment: string
+}
+export type GetCommentType={
+    _id:string,
+    user_id:{
+        _id:string,
+        username: string
+    },
+    comment:string,
+    createdAt: string
+}
+export type GetCommentResponse ={
+    data: GetCommentType[]; 
+  }
 export type ProducDetail={
     productData:Product
 }
-export type CartType={
-
-  
-    user_id: mongoose.Types.ObjectId;
-    product_id: mongoose.Types.ObjectId;
-    quantity: number;
-    message?: string|undefined
-}
-
-
-export interface Cart {
-    product_id: string;
-    product_name: string;
-    price: number;
-    image_url: string;
-    quantity:number
-    totalPrice: number
-}
-
-
-export interface CartData {
-    cartItems: Cart[];
-   
-}
-
-
-export interface CartResponse {
-    data: CartData;
-    totalAmount: number;
+export function getProduct() {
+    return axios.get<ProductType>('/api/product/product-all')
 }
 export function newProduct() {
     return axios.get<ProductType>('/api/product/new')
 }
+export function sofaProduct() {
+    return axios.get<ProductType>('/api/product/sofa')
+}
+export function cabinetProduct() {
+    return axios.get<ProductType>('/api/product/cabinet ')
+}
+export function tablesProduct() {
+    return axios.get<ProductType>('/api/product/tables ')
+}
+export function chairsProduct() {
+    return axios.get<ProductType>('/api/product/chairs ')
+}
 export function getDetail(id: string | undefined) {
     return axios.get<ProducDetail>('/api/product/' + id)
 }
-
-export function postCart(producData:CartType){
-    return axios.post<ErrorType>('/api/product/add-to-cart',producData)
+export function fetchCommet(data:CommenttType) {
+    return axios.post('/api/product/comment',data)
 }
-export function fetchCart(user_id:string|undefined): Promise<{data:CartResponse}>{
-    return axios.get(`/api/product/get-cart/${user_id}`)
+export function fetchGetCommet(product_id:string|undefined) {
+    return axios.get<GetCommentResponse>('/api/product/comment/'+product_id)
 }

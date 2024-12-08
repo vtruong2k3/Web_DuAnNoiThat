@@ -1,16 +1,18 @@
 import axios from "axios"
 
+
 export type RegisterType = {
     username?: string,
     email: string,
     password: string
 }
+export type User={
+    id: string|undefined,
+    username: string,
+    email: string,
+}
 export type UserType = {
-    userData: {
-        id: string|undefined,
-        username: string,
-        email: string,
-    }
+    userData: User
 }
 export type TokenType = {
     token: string
@@ -19,6 +21,12 @@ export type TokenType = {
 export interface ErrorType {
     error: string,
     message: string
+   
+    response?: {
+        data?: {
+            message: string;
+        };
+    };
 }
 export function userRegister(data: RegisterType) {
     return axios.post('/auth/register', data)

@@ -6,10 +6,14 @@ import Clientlayout from './layout/Clientlayout'
 import Home from './pages/Home'
 import Products from './pages/Products'
 import Productdetail from './pages/Productdetail'
-import Login from './pages/Login'
-import Register from './pages/Register'
-import Cartmodal from './pages/Cartmodal'
+import Cart from './pages/Cart'
+import Oders from './pages/Oders'
 import { Toaster } from 'react-hot-toast';
+
+import Bill from './pages/ShowBill'
+import Admin from './layout/Adminlayout'
+import HomeAdmin from './admin/HomeAdmin'
+import ProductAdmin from './admin/ProductAdmin'
 function App() {
   // Swal.fire({
   //   icon: 'error',                // Icon hiển thị (success, error, warning, info, question)
@@ -26,11 +30,20 @@ function App() {
             {path:"", element:<Home/>},
             {path:"product", element:<Products/>},
             {path:"product/product-detail/:id", element:<Productdetail/>},
+            {path:"product/cart", element:<Cart/>},
+            {path:"product/oders", element:<Oders/>},
+           
+            {path:"bill/:oder_id", element:<Bill/>},
         ]
       },
-      {path:"/login", element:<Login/>},
-      {path:"/register", element:<Register/>},
-      {path:"/cart", element:<Cartmodal/>}
+      
+      {path:"/admin", element:<Admin/>,
+        children:[
+          {path:"", element:<HomeAdmin/>},
+          {path:"product", element:<ProductAdmin/>}
+        ]
+      }
+      
   ])
 
   return(

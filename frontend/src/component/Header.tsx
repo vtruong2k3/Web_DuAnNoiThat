@@ -2,32 +2,30 @@
 
 import logo from '../assets/img/logo/logo 1.png'
 import React, { useEffect, useState } from 'react'
-import Modalcart from '../pages/Cartmodal'
 import { ErrorType, getUser, UserType } from '../services/Authservices';
 import toast from 'react-hot-toast';
 import Swal from 'sweetalert2';
 import { Link, useNavigate } from 'react-router-dom';
+import { useUserContext } from '../context/UserContext';
+import { useCart } from '../context/CartContext';
 interface HeaderProps {
     onLoginClick: () => void;
+    onCartClick: () => void
+
 }
-const headerClient: React.FC<HeaderProps> = ({ onLoginClick }) => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
+const headerClient: React.FC<HeaderProps> = ({ onLoginClick, onCartClick }) => {
+
     const [userData, setUserData] = useState<UserType | null>(null);
+    const {totalQuantity}=useCart()
+    const { setUser } = useUserContext()
     const navigate = useNavigate()
-    const openModal = () => {
-        setIsModalOpen(true);
-    };
 
-
-    const closeModal = () => {
-        setIsModalOpen(false);
-    };
     const token = localStorage.getItem('token')
     const userGet = async () => {
         try {
             const { data } = await getUser()
             setUserData(data)
-           
+            setUser(data)
 
         } catch (error) {
             console.log((error as ErrorType).message);
@@ -95,7 +93,7 @@ const headerClient: React.FC<HeaderProps> = ({ onLoginClick }) => {
                             </li>
                             <li>
                                 <a className="dropdown-item" href="#">
-                                   <span className='dropdown-item-span'><i className="fa-solid fa-bag-shopping pe-2"></i>Đơn hàng </span> 
+                                    <span className='dropdown-item-span'><i className="fa-solid fa-bag-shopping pe-2"></i>Đơn hàng </span>
                                 </a>
                             </li>
                             <li>
@@ -117,10 +115,12 @@ const headerClient: React.FC<HeaderProps> = ({ onLoginClick }) => {
                 ) : (
                     <button onClick={onLoginClick} className='header-list-btn-login'><i className="fa-regular fa-user header-item"></i></button>
                 )}
-                <button onClick={openModal} className='header-list-btn-login'><i className="fa-solid fa-bag-shopping header-item"></i></button>
-                <button onClick={openModal} className='header-list-btn-login'><i className="fa-solid fa-heart header-item"></i></button>
+                <button onClick={onCartClick} className='header-list-btn-login item-cart-custom'>{totalQuantity > 0 && (
+                    <span className='item-cart-quantity'>{totalQuantity}</span>
+                )}<i className="fa-solid fa-bag-shopping header-item"></i></button>
+                <button className='header-list-btn-login'><i className="fa-solid fa-heart header-item"></i></button>
             </div>
-            <Modalcart isOpen={isModalOpen} onClose={closeModal} />
+
 
         </header>
     )

@@ -40,8 +40,14 @@ const ModalRegister: React.FC<RegisterModalProps> = ({ onSwitchToLogin, onClose 
             });;
            
         } catch (error) {
-            console.log((error as ErrorType).message);
-            toast.error((error as ErrorType).message)
+            const errorMessage =
+                (error as ErrorType).response?.data?.message ||
+                (error as ErrorType).message ||
+                "Đã xảy ra lỗi, vui lòng thử lại.";
+
+            console.error("Lỗi:", errorMessage);
+            toast.error(errorMessage);
+            console.log(errorMessage);
         }finally{
             setLoading(false)
         }

@@ -6,17 +6,26 @@ import p3 from '../assets/img/product/product_3.png'
 import p4 from '../assets/img/product/product_4.png'
 import { useEffect, useState } from 'react'
 import { ErrorType, getUser, UserType } from '../services/Authservices'
-import { CartType, getDetail, postCart, ProducDetail } from '../services/Productservices'
+import { CommenttType, fetchCommet, fetchGetCommet, GetCommentType, getDetail, ProducDetail } from '../services/Productservices'
+import { CartType, postCart } from '../services/Cartservices'
 import toast from 'react-hot-toast'
 import mongoose from 'mongoose';
 import Loading from '../component/Loading'
+import { SubmitHandler, useForm } from 'react-hook-form'
+import { useUserContext } from '../context/UserContext'
 export default function productDetail() {
-
+    const {
+        register,
+        handleSubmit,
+        formState: { errors }
+    } = useForm<CommenttType>()
     const [count, setCount] = useState(1)
     const { id } = useParams()
+    const { user } = useUserContext()
     const [products, setProducts] = useState<ProducDetail | null>(null)
     const [userData, setUserData] = useState<UserType | null>(null);
     const [loading, setLoading] = useState<boolean>(false)
+    const [comment, setComment] = useState<GetCommentType[]>([])
     const token = localStorage.getItem('token')
     const increment = () => {
         setCount(prevCount => prevCount + 1);
@@ -78,8 +87,14 @@ export default function productDetail() {
                 toast.success(res.data.message);
 
             } catch (error) {
-                const err = error as { message: string };
-                toast.error(err.message || "Đã có lỗi xảy ra, vui lòng thử lại.");
+                const errorMessage =
+                    (error as ErrorType).response?.data?.message ||
+                    (error as ErrorType).message ||
+                    "Đã xảy ra lỗi, vui lòng thử lại.";
+
+                console.error("Lỗi:", errorMessage);
+                toast.error(errorMessage);
+                console.log(errorMessage);
             } finally {
                 setLoading(false)
             }
@@ -95,9 +110,69 @@ export default function productDetail() {
             userGet()
         }
     }, [id, token])
+    const getComment = async () => {
+        try {
+            setLoading(true)
+            const { data } = await fetchGetCommet(id)
+            console.log(data);
+
+            setComment(data.data)
+
+        } catch (error) {
+            const errorMessage =
+                (error as ErrorType).response?.data?.message ||
+                (error as ErrorType).message ||
+                "Đã xảy ra lỗi, vui lòng thử lại.";
+
+            console.error("Lỗi:", errorMessage);
+            toast.error(errorMessage);
+            console.log(errorMessage);
+        } finally {
+            setLoading(false)
+        }
+    }
+    useEffect(() => {
+        getComment()
+    }, [])
+    const addComment: SubmitHandler<CommenttType> = async (data) => {
+        try {
+            setLoading(true)
+            const dataComment = {
+                user_id: new mongoose.Types.ObjectId(user?.userData.id),
+                product_id: new mongoose.Types.ObjectId(id),
+                comment: data.comment
+            }
+            const res = await fetchCommet(dataComment)
+            getComment()
+            toast.success(res.data.message)
+
+        } catch (error) {
+            const errorMessage =
+                (error as ErrorType).response?.data?.message ||
+                (error as ErrorType).message ||
+                "Đã xảy ra lỗi, vui lòng thử lại.";
+
+            console.error("Lỗi:", errorMessage);
+            toast.error(errorMessage);
+            console.log(errorMessage);
+        } finally {
+            setLoading(false)
+        }
+    }
+
     const formatPrice = (price: number): string => {
         return price.toLocaleString('vi-VN') + 'VND'
     }
+    const formatDate = (dateString: string) => {
+        const date = new Date(dateString);
+
+
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+
+        return `${day}-${month}-${year}`;
+    };
     return (
 
         <div className="container-detail">
@@ -132,12 +207,12 @@ export default function productDetail() {
 
                             </div>
                             <div className="detail-list-right-material">
-                                <h4 className="material-title">Chất liệu:</h4>
+                                <h4 className="material-title">Kích thước:</h4>
                                 <span className='material-text'>{products.productData.dimensions}</span>
                             </div>
                             <div className="detail-list-right-dimensions">
-                                <h4 className="dimensions-title">Kích thước:</h4>
-                                <span className='dimensions-text'>{products.productData.meterial}</span>
+                                <h4 className="dimensions-title">Chất liệu:</h4>
+                                <span className='dimensions-text'>{products.productData.material}</span>
                             </div>
                             <div className="detail-list-right-quantity">
                                 <h4 className="quantity-title">Số lượng:</h4>
@@ -150,7 +225,7 @@ export default function productDetail() {
 
                             <div className="detail-list-right-add-cart">
                                 <button className='b1'>Mua ngay</button>
-                                <button className='b2' onClick={addToCart}>{loading ? (<Loading/>):("Thêm giỏ hàng")}</button>
+                                <button className='b2' onClick={addToCart}>{loading ? (<Loading />) : ("Thêm giỏ hàng")}</button>
                             </div>
                         </div>
                     </div>
@@ -176,30 +251,42 @@ export default function productDetail() {
 
                         </div>
                         <div className="tab-pane fade" id="warranty" role="tabpanel" aria-labelledby="warranty-tab">
-                            <div className="review-section mt-5">
-                                <h3>Đánh giá & Bình luận</h3>
-                                <div className="mb-4">
-                                    <label className="form-label">Viết đánh giá của bạn:</label>
-                                    <textarea className="form-control" id="review" rows={3}></textarea>
-                                    <button className="btn btn-primary mt-2">Gửi</button>
-                                </div>
+                            <div className="comment-section">
+                                <h2 className="comment-title mb-4">Bình luận</h2>
 
-                                <div className="review-card card">
-                                    <div className="card-body">
-                                        <div className="d-flex justify-content-between">
-                                            <h5 className="card-title">Tên Người Dùng</h5>
-                                            <div className="star-rating">
-                                                <i className="fas fa-star"></i>
-                                                <i className="fas fa-star"></i>
-                                                <i className="fas fa-star"></i>
-                                                <i className="fas fa-star"></i>
-                                                <i className="far fa-star"></i>
+
+                                <div id="commentList">
+                                    {comment.map(comment => (
+                                        <div className="comment-card" key={comment._id}>
+                                            <img src="https://png.pngtree.com/png-clipart/20190921/original/pngtree-user-avatar-boy-png-image_4693645.jpg" alt="User Photo" />
+                                            <div className="comment-content">
+                                                <div className="d-flex align-items-center">
+                                                    <span className="comment-author">{comment.user_id.username}</span>
+                                                    <span className="comment-date">{formatDate(comment.createdAt)}</span>
+                                                </div>
+                                                <p className="comment-text">{comment.comment}</p>
                                             </div>
                                         </div>
-                                        <p className="card-text">Nội dung đánh giá của người dùng.</p>
-                                    </div>
+                                    ))}
+
                                 </div>
 
+
+                                {token && (
+                                    <div className="add-comment mt-4">
+                                        <h4>Thêm bình luận</h4>
+                                        <form id="commentForm" onSubmit={handleSubmit(addComment)}>
+
+                                            <div className="mb-3 mt-3">
+                                                <textarea
+                                                    {...register('comment', { required: "Vui lòng không bỏ trống" })}
+                                                    id="commentText" className="form-control" rows={3}></textarea>
+                                                {errors.comment && <div className="text-danger mt-2">{errors.comment.message}</div>}
+                                            </div>
+                                            <button type="submit" className="btn btn-primary">Bình luận</button>
+                                        </form>
+                                    </div>
+                                )}
                             </div>
                         </div>
                         <div className="tab-pane fade" id="shipping" role="tabpanel" aria-labelledby="shipping-tab">

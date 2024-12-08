@@ -8,8 +8,8 @@ const orderItemSchema = new mongoose.Schema({
 },
 {
     versionKey:false,
-    timestamps: trué   
+    timestamps: true   
 });
 
-const OrderItem = mongoose.model('orderItem', orderItemSchema);
+const OrderItem = mongoose.model('orderitems', orderItemSchema);
 module.exports = OrderItem;
