@@ -26,13 +26,13 @@ const ModalRegister: React.FC<RegisterModalProps> = ({ onSwitchToLogin, onClose 
             
 
             Swal.fire({
-                icon: 'success',                // Icon hiển thị (success, error, warning, info, question)
-                title: 'Thành công',            // Tiêu đề của thông báo
-                text: res.data.message,    // Nội dung của thông báo
-                confirmButtonText: 'OK',        // Nút xác nhận
-                showCloseButton: true,          // Nút đóng
-                timer: 1000,                    // Tự động đóng sau 3 giây
-                timerProgressBar: true,         // Hiển thị thanh tiến trình
+                icon: 'success',               
+                title: 'Thành công',           
+                text: res.data.message,    
+                confirmButtonText: 'OK',        
+                showCloseButton: true,          
+                timer: 1000,                    
+                timerProgressBar: true,         
             }).then(() => {
 
                 onClose();
@@ -76,7 +76,7 @@ const ModalRegister: React.FC<RegisterModalProps> = ({ onSwitchToLogin, onClose 
                                         required: "Vui lòng không bỏ trống"
                                     }
                                 )}
-                                type="text" id="name" placeholder="House@gmail.com" />
+                                type="text" id="name" placeholder="username" />
                             {errors?.username && <div className="text-danger">{errors?.username.message}</div>}
                         </div>
                         <div className="form-group">
@@ -91,7 +91,7 @@ const ModalRegister: React.FC<RegisterModalProps> = ({ onSwitchToLogin, onClose 
                                         }
                                     }
                                 )}
-                                type="email" id="email" placeholder="House@gmail.com" />
+                                type="email" id="email" placeholder="abc@gmail.com" />
                             {errors?.email && <div className="text-danger">{errors?.email.message}</div>}
                         </div>
                         <div className="form-group">

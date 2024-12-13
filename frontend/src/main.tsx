@@ -8,7 +8,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { configAxios } from './config/Axiosconfig.ts';
 import { CartProvider } from './context/CartContext.tsx'
 import { UserProvider } from './context/UserContext.tsx';
-
+import {CategoryProvider} from './context/CategoryContext.tsx'
 
 
 
@@ -17,13 +17,15 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
 
-    <UserProvider> 
-     
-      <CartProvider> {/* Bao bọc CartProvider để cung cấp cart context */}
-        <App />  {/* App sẽ sử dụng cả user context và cart context */}
-      </CartProvider>
-      
-    </UserProvider>
+      <UserProvider>
+
+        <CartProvider>
+          <CategoryProvider>
+            <App />
+          </CategoryProvider>
+        </CartProvider>
+
+      </UserProvider>
 
     </BrowserRouter>
   </StrictMode>

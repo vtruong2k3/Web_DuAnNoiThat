@@ -1,11 +1,20 @@
-import { Outlet } from "react-router-dom";
-
-export default function adminLayout(){
-    return(
+import { Navigate, Outlet } from "react-router-dom";
+import Header from '../component/HeaderAdmin'
+export default function adminLayout() {
+    const token = localStorage.getItem('token')
+    return (
         <div className="main">
-            <div className="container-admin">
-                <Outlet/>
-            </div>
+            {token ? (
+                <div className="container-admin">
+                    <div className="admin-list">
+                        <Header />
+                        <Outlet />
+                    </div>
+
+                </div>
+            ) : (
+                <Navigate to={'/login-admin'}/>
+            )}
         </div>
     )
 }

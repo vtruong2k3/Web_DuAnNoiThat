@@ -29,13 +29,13 @@ const ModalLogin: React.FC<LoginModalProps> = ({ onSwitchToRegister, onClose }) 
             localStorage.setItem('token', res.data.token)
             navigte('/')
             Swal.fire({
-                icon: 'success',                // Icon hiển thị (success, error, warning, info, question)
-                title: 'Thành công',            // Tiêu đề của thông báo
-                text: res.data.message,    // Nội dung của thông báo
-                confirmButtonText: 'OK',        // Nút xác nhận
-                showCloseButton: true,          // Nút đóng
-                timer: 1000,                    // Tự động đóng sau 3 giây
-                timerProgressBar: true,         // Hiển thị thanh tiến trình
+                icon: 'success',                
+                title: 'Thành công',            
+                text: res.data.message,    
+                confirmButtonText: 'OK',       
+                showCloseButton: true,          
+                timer: 1000,                    
+                timerProgressBar: true,        
             }).then(() => {
 
                 onClose();
@@ -87,7 +87,7 @@ const ModalLogin: React.FC<LoginModalProps> = ({ onSwitchToRegister, onClose }) 
                                         }
                                     }
                                 )}
-                                type="email" id="email" placeholder="House@gmail.com" />
+                                type="email" id="email" placeholder="abc@gmail.com" />
                             {errors?.email && <div className="text-danger">{errors?.email.message}</div>}
                         </div>
 

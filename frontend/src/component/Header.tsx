@@ -28,8 +28,14 @@ const headerClient: React.FC<HeaderProps> = ({ onLoginClick, onCartClick }) => {
             setUser(data)
 
         } catch (error) {
-            console.log((error as ErrorType).message);
-            toast.error((error as ErrorType).message)
+            const errorMessage =
+                (error as ErrorType).response?.data?.message ||
+                (error as ErrorType).message ||
+                "Đã xảy ra lỗi, vui lòng thử lại.";
+
+            console.error("Lỗi:", errorMessage);
+            toast.error(errorMessage);
+            console.log(errorMessage);
         }
     }
     const logOut = () => {
@@ -92,15 +98,11 @@ const headerClient: React.FC<HeaderProps> = ({ onLoginClick, onCartClick }) => {
                                 </a>
                             </li>
                             <li>
-                                <a className="dropdown-item" href="#">
+                                <Link className="dropdown-item" to="/product/oder-item">
                                     <span className='dropdown-item-span'><i className="fa-solid fa-bag-shopping pe-2"></i>Đơn hàng </span>
-                                </a>
+                                </Link>
                             </li>
-                            <li>
-                                <a className="dropdown-item" href="#">
-                                    Something else here
-                                </a>
-                            </li>
+
                             <li>
                                 <hr className="dropdown-divider" />
                             </li>

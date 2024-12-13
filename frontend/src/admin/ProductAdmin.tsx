@@ -1,69 +1,130 @@
+/* eslint-disable react-hooks/rules-of-hooks */
+
+
 import { Link } from 'react-router-dom'
-import logo from '../assets/img/logo/logo 1.png'
-import p1 from '../assets/img/news/t1.webp'
+
+import { useEffect, useState } from 'react'
+import toast from 'react-hot-toast'
+import { ErrorType } from '../services/Authservices'
+import { fetchDeleteProduct, fetchGetPoductAll, ProductAdmin } from '../services/ProductAdminServices'
+import Loading from '../component/Loading'
+import Swal from 'sweetalert2'
+
 export default function productAdmin() {
+    const [product, setProduct] = useState<ProductAdmin[]>([])
+    const [loading, setLoading] = useState<boolean>(false)
+   
+    const getProductAll = async () => {
+        try {
+            setLoading(true)
+            const { data } = await fetchGetPoductAll()
+            setProduct(data.data)
+        } catch (error) {
+            const errorMessage =
+                (error as ErrorType).response?.data?.message ||
+                (error as ErrorType).message ||
+                "Đã xảy ra lỗi, vui lòng thử lại.";
+
+            console.error("Lỗi:", errorMessage);
+            toast.error(errorMessage);
+            console.log(errorMessage);
+        } finally {
+            setLoading(false)
+        }
+    }
+    useEffect(() => {
+        getProductAll()
+    }, [])
+    const handDelete=async(product_id:string|undefined)=>{
+        if(window.confirm("Bạn có muốn xóa hay không ?")){
+            try {
+                setLoading(true)
+               const res=await fetchDeleteProduct(product_id)
+               getProductAll()
+                Swal.fire({
+                    icon: 'success',                // Icon hiển thị (success, error, warning, info, question)
+                    title: 'Xóa Thành công',            // Tiêu đề của thông báo
+                    text: res.data.message,            // Nội dung của thông báo
+                    confirmButtonText: 'OK',        // Nút xác nhận
+                    showCloseButton: true,          // Nút đóng
+                    timer: 2000,                    // Tự động đóng sau 3 giây
+                    timerProgressBar: true,         // Hiển thị thanh tiến trình
+                })
+            } catch (error) {
+                const errorMessage =
+                    (error as ErrorType).response?.data?.message ||
+                    (error as ErrorType).message ||
+                    "Đã xảy ra lỗi, vui lòng thử lại.";
+    
+                console.error("Lỗi:", errorMessage);
+                toast.error(errorMessage);
+                console.log(errorMessage);
+            } finally {
+                setLoading(false)
+            }
+        }
+    }
+    const formatPrice = (price: number): string => {
+        return price.toLocaleString('vi-VN') + ' ' + 'VND'
+    }
     return (
-        <div className="container-home-admin">
-            <div className="admin-list">
-                <div className="admin-left col-2">
-                    <div className="admin-left-logo">
-                        <img src={logo} alt="" className="admin-img-logo" />
-                    </div>
-                    <div className="admin-left-menu">
-                        <ul className="menu">
-                            <li><Link className='menu-link' to="/admin"><i className="fa-solid fa-house pe-1"></i> Bảng điều khiển</Link></li>
-                            <li><Link className='menu-link' to="/admin/product"><i className="fa-solid fa-sliders pe-1"></i> Tài khoản</Link></li>
-                            <li><Link className='menu-link' to="#"><i className="fa-brands fa-buffer pe-1"></i> Sản phẩm</Link></li>
-                            <li><Link className='menu-link' to="#"><i className="fa-solid fa-clipboard pe-1"></i> Đơn hàng</Link></li>
-                            <li><Link className='menu-link' to="#"><i className="fa-solid fa-chart-line pe-1"></i> Thống kê</Link></li>
-                            <li><Link className='menu-link' to="#"><i className="fa-solid fa-arrow-right-from-bracket pe-1"></i> Thoát</Link></li>
-                        </ul>
-
-                    </div>
+        <div className="admin-right">
+            <div className="admin-right-header">
+                <div className="header-title">
+                    <h2 className="title-text">Vũ Văn Trường <i className="fa-regular fa-bell"></i></h2>
                 </div>
-                <div className="admin-right col-10">
-                    <div className="admin-right-header">
-                        <div className="header-title">
-                            <h2 className="title-text">Vũ Văn Trường <i className="fa-regular fa-bell"></i></h2>
-                        </div>
-                    </div>
-                    <div className="admin-right-body scroll">
-                        <div className="admin-right-body-list">
+            </div>
+            <div className="admin-right-body scrollable-content">
+                {loading && <Loading />}
+                <div className="admin-right-body-list">
 
-                            <div className="list-table-new">
-                                <div className="table-new-header">
-                                    <h1 className="title">Danh sách sản phẩm</h1>
-                                </div>
-                                <div className="table-new-body">
-                                    <table className="table-custom">
-                                        <thead className='table-thead'> 
-                                            <tr>
-                                                <td>STT</td>
-                                                <td>Tên sản phẩm</td>
-                                                <td>Hỉnh ảnh</td>
-                                                <td>Giá</td>
-                                                <td>Kích thước</td>
-                                                <td>Active</td>
-                                            </tr>
-                                        </thead>
-                                        <tbody className='table-body'>
-                                            <tr className='table-body-tr'>
-                                                <td>1</td>
-                                                <td>Sản phẩm abc dsfgsdghgdsghdfgjdrtjhdryjdrj dfgsdfhsdghfdsgh</td>
-                                                <td><img src={p1} alt="" width={'100px'} height={'70px'} /></td>
-                                                <td>23.000.000 VND</td>
-                                                <td>Da bò thật</td>
-                                                <td className='active'>
-                                                    <Link className='edit'  to={'#'}><i className="fa-regular fa-pen-to-square pe-3"></i></Link>
-                                                    <button className='delete'><i className="fa-regular fa-trash-can"></i></button>
-                                                    
-                                                </td>
-                                            </tr>
-                                            
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
+                    <div className="list-table-new">
+                        <div className="table-new-header">
+                            <h1 className="title">Danh sách sản phẩm</h1>
+                        </div>
+                        <div className="table-new-add">
+                            <Link to={'/admin/add-product'}><button className="add-btn">Thêm sản phẩm</button></Link>
+                        </div>
+                        <div className="table-new-body">
+                            <table className="table-custom">
+                                <thead className='table-thead'>
+                                    <tr>
+                                        <td>STT</td>
+                                        <td>Tên sản phẩm</td>
+                                        <td>Hỉnh ảnh</td>
+                                        <td>Giá</td>
+                                        <td>Chất liệu</td>
+                                        <td>Kích thước</td>
+                                        <td>Active</td>
+                                    </tr>
+                                </thead>
+                                <tbody className='table-body'>
+                                    {product.map((product, index) => (
+                                        <tr key={product._id}>
+                                            <td>{index + 1}</td>
+                                            <td>{product.product_name}</td>
+                                            <td><Link to={`/product/product-detail/${product._id}`}><img src={`http://localhost:5000/uploads/${product.image_url}`} alt={product.product_name} width={100} height={70} /></Link></td>
+                                            <td className='text-price'>{formatPrice(product.price)}</td>
+                                            <td>{product.material}</td>
+                                            <td>{product.dimensions}</td>
+                                            <td className='active'>
+                                                <Link className='edit' to={'#'}><i className="fa-regular fa-pen-to-square"></i></Link>
+                                                <button onClick={()=>handDelete(product._id)} className='delete'><i className="fa-regular fa-trash-can"></i></button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                    {/* <tr>
+                                        <td>1</td>
+                                        <td>Sản phẩm abc dsfgsdghgdsghdfgjdrtjhdryjdrj dfgsdfhsdghfdsgh</td>
+                                        <td><img src={p1} alt="" width={'100px'} height={'70px'} /></td>
+                                        <td>23.000.000 VND</td>
+                                        <td>Da bò thật</td>
+                                        <td>300x400x500 mm</td>
+
+                                    </tr> */}
+
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>

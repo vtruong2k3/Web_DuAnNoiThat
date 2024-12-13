@@ -3,7 +3,7 @@ const Product = require("../models/modelProduct");
 const Cart = require("../models/modelCart");
 const Oders = require("../models/modelOder");
 const OrderItem = require("../models/modelOderItem");
-const { json } = require("body-parser");
+
 class cartController {
   async addToCart(req, res) {
     try {

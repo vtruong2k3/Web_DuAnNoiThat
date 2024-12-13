@@ -1,55 +1,65 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { useEffect, useState } from 'react'
-import n1 from '../assets/img/product/new_1.png'
-import n2 from '../assets/img/product/new_2.png'
-import n3 from '../assets/img/product/new_3.png'
-import n4 from '../assets/img/product/new_4.png'
-import { getProduct, ProductType } from '../services/Productservices'
-import { ErrorType } from '../services/Authservices'
-import toast from 'react-hot-toast'
-import Loading from '../component/Loading'
-import { Link } from 'react-router-dom'
+import { useEffect, useState } from "react";
+import { getProduct, ProductType } from "../services/Productservices";
+import { ErrorType } from "../services/Authservices";
+import toast from "react-hot-toast";
+import Loading from "../component/Loading";
+import { Link } from "react-router-dom";
+
 export default function productAll() {
-    const [loading, setLoading] = useState<boolean>(false)
-    const [product, setProduct] = useState<ProductType>()
-    const getProductAll = async () => {
-        try {
-            setLoading(true)
-            const { data } = await getProduct()
+  const [loading, setLoading] = useState<boolean>(false);
+  const [product, setProduct] = useState<ProductType>();
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const itemsPerPage = 9; // Số sản phẩm trên mỗi trang
 
-
-
-            setProduct(data)
-        } catch (error) {
-            const errorMessage =
-                (error as ErrorType).response?.data?.message ||
-                (error as ErrorType).message ||
-                "Đã xảy ra lỗi, vui lòng thử lại.";
-
-            console.error("Lỗi:", errorMessage);
-            toast.error(errorMessage);
-            console.log(errorMessage);
-        } finally {
-            setLoading(false)
-        }
+  const getProductAll = async () => {
+    try {
+      setLoading(true);
+      const { data } = await getProduct();
+      setProduct(data);
+    } catch (error) {
+      const errorMessage =
+        (error as ErrorType).response?.data?.message ||
+        (error as ErrorType).message ||
+        "Đã xảy ra lỗi, vui lòng thử lại.";
+      console.error("Lỗi:", errorMessage);
+      toast.error(errorMessage);
+    } finally {
+      setLoading(false);
     }
-    useEffect(() => {
-        getProductAll()
-    }, [])
-    const formatPrice = (price: number): string => {
-        return price.toLocaleString('vi-VN') + ' ' + 'VND'
-    }
-    return (
-        
-        <div className="container-product-all">
-            {loading && <Loading/>}
-            <div className="banner-product-all">
-                <h1 className="banner-product-all-title">Tất cả sản phẩm</h1>
-            </div>
+  };
 
-            <div className="container">
-                <div className="product-all-list">
-                    <div className="col-3 col-left mt-5">
+  useEffect(() => {
+    getProductAll();
+  }, []);
+
+  const formatPrice = (price: number): string => {
+    return price.toLocaleString("vi-VN") + " " + "VND";
+  };
+
+  
+  const currentProducts = product?.productData?.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  
+  const totalPages = Math.ceil((product?.productData?.length || 0) / itemsPerPage);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  return (
+    <div className="container-product-all">
+      {loading && <Loading />}
+      <div className="banner-product-all">
+        <h1 className="banner-product-all-title">Tất cả sản phẩm</h1>
+      </div>
+
+      <div className="container">
+        <div className="product-all-list">
+        <div className="col-3 col-left mt-5">
                         <div className="card">
                             <div className="card-header ">DANH MỤC SẢN PHẨM</div>
                             <ul className="list-group list-group-flush">
@@ -112,53 +122,69 @@ export default function productAll() {
                             </ul>
                         </div>
                     </div>
-                    <div className="col-9 col-right">
-                        <div className="arrange">
-                            <p className='arrange-text'>Sắp xếp theo:
-                                <select >
-                                    <option value="Mặc định">Mặc định</option>
-                                    <option value=""> Tên A đến Z</option>
-                                    <option value="">Tên Z đến A</option>
-                                    <option value="">Giá tăng dần</option>
-                                    <option value="">Giá giảm dần</option>
-                                </select>
-                            </p>
-                        </div>
-
-
-
-                        <div className="product-new-list">
-                        {product && product.productData && product.productData.length > 0 ? (
-                                product.productData.map(product => (
-                                    <div className="product-new-item" key={product._id}>
-                                        <Link to={`/product/product-detail/${product._id}`}>
-                                            <img src={`http://localhost:5000/uploads/${product.image_url}`} alt="" className="product-new-img" />
-                                        </Link>
-                                       
-                                        <div className="product-new-body">
-                                            <h3 className="product-new-body-title">{product.product_name}</h3>
-                                            <div className="product-rating">
-                                                <span className="star">★</span>
-                                                <span className="star">★</span>
-                                                <span className="star">★</span>
-                                                <span className="star">★</span>
-                                                <span className="star">★</span>
-                                            </div>
-                                            <div className="product-new-money">
-                                                <p className='money-sale'>{formatPrice(product.price)}</p>
-                                                <p className='money'>5.000.000 VND</p> {/* Giá cố định, có thể thay bằng giá gốc nếu có */}
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))
-                            ) : (
-                                <p>No new products available</p>
-                            )}
-                            
-                        </div>
-                    </div>
-                </div>
+          <div className="col-9 col-right">
+            <div className="arrange">
+              <p className="arrange-text">
+                Sắp xếp theo:
+                <select>
+                  <option value="Mặc định">Mặc định</option>
+                  <option value=""> Tên A đến Z</option>
+                  <option value="">Tên Z đến A</option>
+                  <option value="">Giá tăng dần</option>
+                  <option value="">Giá giảm dần</option>
+                </select>
+              </p>
             </div>
+
+            <div className="product-new-list product-list-custom">
+              {currentProducts && currentProducts.length > 0 ? (
+                currentProducts.map((product) => (
+                  <div className="product-new-item" key={product._id}>
+                    <Link to={`/product/product-detail/${product._id}`}>
+                      <img
+                        src={`http://localhost:5000/uploads/${product.image_url}`}
+                        alt=""
+                        className="product-new-img"
+                      />
+                    </Link>
+                    <div className="product-new-body">
+                      <h3 className="product-new-body-title">{product.product_name}</h3>
+                      <div className="product-rating">
+                        <span className="star">★</span>
+                        <span className="star">★</span>
+                        <span className="star">★</span>
+                        <span className="star">★</span>
+                        <span className="star">★</span>
+                      </div>
+                      <div className="product-new-money">
+                        <p className="money-sale">{formatPrice(product.price)}</p>
+                        <p className="money">5.000.000 VND</p>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <p>Không có sản phẩm nào.</p>
+              )}
+            </div>
+
+            
+            <div className="pagination">
+              {Array.from({ length: totalPages }, (_, index) => (
+                <button
+                  key={index + 1}
+                  className={`mt-3 pagination-btn ${
+                    currentPage === index + 1 ? "active" : ""
+                  }`}
+                  onClick={() => handlePageChange(index + 1)}
+                >
+                  {index + 1}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
-    )
+      </div>
+    </div>
+  );
 }
